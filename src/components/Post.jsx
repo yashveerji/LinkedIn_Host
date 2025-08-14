@@ -162,7 +162,7 @@ import { BiLike, BiSolidLike } from "react-icons/bi";
 import { LuSendHorizontal } from "react-icons/lu";
 import axios from 'axios';
 import { authDataContext } from '../context/AuthContext';
-import { userDataContext } from '../context/userContext';
+import { userDataContext } from '../context/UserContext';
 import { io } from "socket.io-client"
 import ConnectionButton from './ConnectionButton';
 
