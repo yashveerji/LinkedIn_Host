@@ -4,7 +4,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 export const userDataContext=createContext()
 
-function UserContext({children}) {
+function userContext({children}) {
 let [userData,setUserData]=useState(null)
 let {serverUrl}=useContext(authDataContext)
 let [edit,setEdit]=useState(false)
@@ -67,4 +67,4 @@ getCurrentUser();
   )
 }
 
-export default UserContext
+export default userContext
