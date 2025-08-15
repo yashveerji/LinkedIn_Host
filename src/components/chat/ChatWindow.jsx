@@ -2,23 +2,28 @@
 
 import React, { useEffect, useState, useContext } from "react";
 import { userDataContext } from "../../context/UserContext";
+import { authDataContext } from "../../context/AuthContext";
 import { io } from "socket.io-client";
 import { useConnections } from "../../hooks/useConnections";
 import dp from "../../assets/dp.webp";
+import axios from "axios";
 
 const socket = io("http://localhost:8000", {
   withCredentials: true,
 });
 
 
+
 function ChatBox() {
   const { userData } = useContext(userDataContext);
+  const { serverUrl } = useContext(authDataContext);
   const [receiverId, setReceiverId] = useState("");
   const [receiverObj, setReceiverObj] = useState(null);
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState([]);
   const connections = useConnections();
 
+  // Fetch chat history when receiverId changes
   useEffect(() => {
     if (!userData?._id) return;
     socket.emit("register", userData._id);
@@ -29,6 +34,26 @@ function ChatBox() {
       socket.off("receive_message");
     };
   }, [userData]);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      if (!userData?._id || !receiverId) return;
+      try {
+        const res = await axios.get(`${serverUrl}/api/chat/history/${receiverId}`, {
+          withCredentials: true,
+        });
+        // Mark messages as incoming or outgoing
+        const items = (res.data.items || []).map(msg => ({
+          ...msg,
+          incoming: msg.from !== userData._id,
+        }));
+        setChat(items);
+      } catch (err) {
+        setChat([]);
+      }
+    };
+    fetchHistory();
+  }, [receiverId, userData, serverUrl]);
 
   const sendMessage = () => {
     if (!receiverId || !message.trim() || !userData?._id) return;

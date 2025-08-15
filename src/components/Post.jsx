@@ -142,14 +142,33 @@ function Post(props) {
     }
   };
 
-  // Handler for sending post to chat
-  const handleSendToChat = async () => {
-    if (!postId) return;
+  // Share to Connection modal state
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [selectedConnection, setSelectedConnection] = useState(null);
+  const [shareLoading, setShareLoading] = useState(false);
+
+  // Handler for opening share modal
+  const handleShareToConnection = () => {
+    setShowShareModal(true);
+  };
+
+  // Handler for sending post to selected connection
+  const handleSendToConnection = async () => {
+    if (!postId || !selectedConnection) return;
+    setShareLoading(true);
     try {
-      alert("Send to Chat: " + (description || "[No description]") + (image ? " [Image attached]" : ""));
+      // Example API call: you may want to implement this endpoint in your backend
+      await axios.post(`${serverUrl}/api/chat/share-post`, {
+        to: selectedConnection,
+        postId,
+      }, { withCredentials: true });
+      setShowShareModal(false);
+      setSelectedConnection(null);
+      alert("Post shared successfully!");
     } catch (error) {
-      alert("Failed to send to chat");
+      alert("Failed to share post");
     }
+    setShareLoading(false);
   };
 
   return (
@@ -273,16 +292,50 @@ function Post(props) {
           </svg>
           <span>Repost</span>
         </button>
-        {/* Send to Chat */}
+        {/* Share to Connection */}
         <button
           className='flex items-center gap-2 hover:text-purple-600'
-          onClick={handleSendToChat}
+          onClick={handleShareToConnection}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 2.25l-9.193 9.193m0 0l-3.182 8.182a.563.563 0 00.728.728l8.182-3.182m-5.728-5.728l8.182-8.182a.563.563 0 01.728.728l-8.182 8.182z" />
           </svg>
-          <span>Send to Chat</span>
+          <span>Share to Connection</span>
         </button>
+      {/* Share to Connection Modal */}
+      {showShareModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white dark:bg-gray-900 rounded-lg p-6 w-full max-w-xs shadow-lg relative">
+            <button className="absolute top-2 right-2 text-gray-400 hover:text-red-500" onClick={() => setShowShareModal(false)}>&times;</button>
+            <h3 className="text-lg font-semibold mb-3 text-center">Share Post to Connection</h3>
+            {userData?.connections && userData.connections.length > 0 ? (
+              <>
+                <select
+                  className="w-full p-2 border rounded mb-4 text-black dark:text-white dark:bg-gray-800"
+                  value={selectedConnection || ''}
+                  onChange={e => setSelectedConnection(e.target.value)}
+                >
+                  <option value='' disabled>Select a connection</option>
+                  {userData.connections.map(conn => (
+                    <option key={conn._id} value={conn._id}>
+                      {conn.firstName} {conn.lastName} {conn.userName ? `(@${conn.userName})` : ''}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                  onClick={handleSendToConnection}
+                  disabled={!selectedConnection || shareLoading}
+                >
+                  {shareLoading ? 'Sharing...' : 'Share'}
+                </button>
+              </>
+            ) : (
+              <div className="text-center text-gray-500">No connections found.</div>
+            )}
+          </div>
+        </div>
+      )}
       </div>
       {/* Comments section */}
       {showComment && (
