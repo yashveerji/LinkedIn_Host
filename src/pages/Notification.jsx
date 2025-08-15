@@ -59,8 +59,9 @@ function Notification() {
   }, []);
 
   return (
-    <div className="w-screen min-h-screen bg-gradient-to-br from-[#1A1F71] to-[#2C2C2C] pt-[80px] px-[20px] flex flex-col items-center">
+    <>
       <Nav />
+      <div className="w-full min-h-screen bg-gradient-to-br from-[#1A1F71] to-[#2C2C2C] px-[20px] flex flex-col items-center">
 
       {/* Top Bar */}
       <div className="w-full max-w-[900px] sticky top-[80px] z-10 bg-white shadow-lg rounded-lg flex items-center p-4 text-lg text-gray-700 justify-between mt-5">
@@ -127,6 +128,7 @@ function Notification() {
         <div className="text-gray-500 mt-10">No notifications yet.</div>
       )}
     </div>
+    </>
   );
 }
 

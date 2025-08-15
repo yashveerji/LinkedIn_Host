@@ -97,41 +97,41 @@ function Login() {
   };
 
   return (
-  <div className="w-full min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4 sm:gap-6 px-2">
+    <div className="w-full min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-6">
       {/* Logo */}
-      <div className="flex justify-center w-full">
-        <img src={logo} alt="Logo" className="h-[80px] sm:h-[150px] object-contain" />
+      <div className="flex justify-center">
+        <img src={logo} alt="Logo" className="h-[150px] object-contain" />
       </div>
 
       {/* Login Form */}
       <form
-        className="w-full max-w-xs sm:max-w-[400px] bg-white shadow-lg rounded-xl px-3 sm:px-6 py-6 sm:py-8 flex flex-col gap-3 sm:gap-4"
+        className="w-[90%] max-w-[400px] bg-white shadow-lg rounded-xl px-6 py-8 flex flex-col gap-4"
         onSubmit={handleSignIn}
       >
-  <h1 className="text-gray-800 text-2xl sm:text-3xl font-bold mb-2 sm:mb-4 text-center">Sign In</h1>
+        <h1 className="text-gray-800 text-3xl font-bold mb-4 text-center">Sign In</h1>
 
         {/* Email */}
         <input
           type="email"
           placeholder="Email"
           required
-          className="w-full h-[44px] sm:h-[50px] border border-gray-300 focus:border-[#24b2ff] focus:ring-2 focus:ring-[#24b2ff] outline-none text-gray-800 text-[15px] sm:text-[16px] px-3 sm:px-4 rounded-lg transition-all"
+          className="w-full h-[50px] border border-gray-300 focus:border-[#24b2ff] focus:ring-2 focus:ring-[#24b2ff] outline-none text-gray-800 text-[16px] px-4 rounded-lg transition-all"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         {/* Password */}
-  <div className="w-full h-[44px] sm:h-[50px] border border-gray-300 focus-within:border-[#24b2ff] focus-within:ring-2 focus-within:ring-[#24b2ff] rounded-lg relative transition-all">
+        <div className="w-full h-[50px] border border-gray-300 focus-within:border-[#24b2ff] focus-within:ring-2 focus-within:ring-[#24b2ff] rounded-lg relative transition-all">
           <input
             type={show ? "text" : "password"}
             placeholder="Password"
             required
-            className="w-full h-full outline-none text-gray-800 text-[15px] sm:text-[16px] px-3 sm:px-4 pr-12 sm:pr-16 rounded-lg"
+            className="w-full h-full outline-none text-gray-800 text-[16px] px-4 pr-16 rounded-lg"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <span
-            className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-[#24b2ff] cursor-pointer font-medium text-xs sm:text-sm select-none hover:underline"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-[#24b2ff] cursor-pointer font-medium text-sm select-none hover:underline"
             onClick={() => setShow((prev) => !prev)}
           >
             {show ? "Hide" : "Show"}
@@ -140,21 +140,21 @@ function Login() {
 
         {/* Error */}
         {err && (
-          <p className="text-center text-red-500 text-xs sm:text-sm font-medium mt-1">
+          <p className="text-center text-red-500 text-sm font-medium mt-1">
             *{err}
           </p>
         )}
 
         {/* Submit */}
         <button
-          className="w-full h-[44px] sm:h-[50px] rounded-full bg-[#24b2ff] hover:bg-[#1d9be0] transition-all text-white font-semibold mt-4 sm:mt-6 disabled:opacity-60 disabled:cursor-not-allowed text-sm sm:text-base"
+          className="w-full h-[50px] rounded-full bg-[#24b2ff] hover:bg-[#1d9be0] transition-all text-white font-semibold mt-6 disabled:opacity-60 disabled:cursor-not-allowed"
           disabled={loading}
         >
           {loading ? "Loading..." : "Sign In"}
         </button>
 
         {/* Sign Up Link */}
-        <p className="text-center text-gray-600 mt-2 sm:mt-4 text-xs sm:text-base">
+        <p className="text-center text-gray-600 mt-4">
           Don’t have an account?{" "}
           <span
             className="text-[#24b2ff] font-medium cursor-pointer hover:underline"

@@ -59,11 +59,9 @@ getCurrentUser();
         userData,setUserData,edit,setEdit,postData,setPostData,getPost,handleGetProfile,profileData,setProfileData
     }
   return (
-    <div>
-        <userDataContext.Provider value={value}>
+    <userDataContext.Provider value={value}>
       {children}
-      </userDataContext.Provider>
-    </div>
+    </userDataContext.Provider>
   )
 }
 
