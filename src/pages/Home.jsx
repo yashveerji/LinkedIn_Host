@@ -67,13 +67,13 @@ function Home() {
   }, [uploadPost]);
 
     return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-[#1A1F71] to-[#2C2C2C] dark:from-[#181824] dark:to-[#23243a] flex flex-col lg:flex-row p-5 gap-5 relative text-white dark:text-yellow-100">
+  <div className="w-full min-h-screen bg-gradient-to-br from-[#1A1F71] to-[#2C2C2C] dark:from-[#181824] dark:to-[#23243a] flex flex-col lg:flex-row p-2 sm:p-5 gap-3 sm:gap-5 relative text-white dark:text-yellow-100">
       {edit && <EditProfile />}
 
     {/* Left Sidebar */}
-  <div className="w-full lg:w-[25%] flex flex-col gap-5">
+  <div className="w-full lg:w-[25%] flex flex-col gap-3 sm:gap-5 order-2 lg:order-1 mt-4 lg:mt-0">
         {/* Profile Card */}
-  <div className="card flex flex-col items-center relative dark:bg-[#181824] dark:border-yellow-700">
+  <div className="card flex flex-col items-center relative dark:bg-[#181824] dark:border-yellow-700 w-full">
           <div
             className="relative w-[80px] h-[80px] rounded-full overflow-hidden border-4 border-yellow-400 dark:border-yellow-700 cursor-pointer"
             onClick={() => setEdit(true)}
@@ -96,7 +96,7 @@ function Home() {
         </div>
 
         {/* Suggested Users */}
-  <div className="card dark:bg-[#181824] dark:border-yellow-700">
+  <div className="card dark:bg-[#181824] dark:border-yellow-700 w-full">
           <h3 className="font-semibold text-lg text-yellow-400 dark:text-yellow-300 mb-3">Suggested Users</h3>
           <div className="flex flex-col gap-3 max-h-[400px] overflow-y-auto">
             {suggestedUser.length > 0 ? (
@@ -127,10 +127,10 @@ function Home() {
       </div>
 
   {/* Center Feed */}
-  <div className="w-full lg:w-[50%] flex flex-col gap-5 mt-[90px]">
+  <div className="w-full lg:w-[50%] flex flex-col gap-3 sm:gap-5 mt-6 sm:mt-[90px] order-1 lg:order-2">
         {/* + Post Button */}
         <button
-          className="btn-primary w-full flex items-center justify-center gap-2 text-lg dark:bg-yellow-500 dark:text-[#181824]"
+          className="btn-primary w-full flex items-center justify-center gap-2 text-base sm:text-lg dark:bg-yellow-500 dark:text-[#181824]"
           onClick={() => setUploadPost(true)}
         >
           <FiPlus size={20} /> Add Post
@@ -138,7 +138,7 @@ function Home() {
 
         {/* Posts */}
         {postData.map((post, index) => (
-          <div key={index} className="card dark:bg-[#181824] dark:border-yellow-700">
+          <div key={index} className="card dark:bg-[#181824] dark:border-yellow-700 w-full">
             <Post {...post} onDelete={() => {
               setToast("Post deleted successfully");
               setTimeout(() => {
@@ -150,7 +150,7 @@ function Home() {
         ))}
       {/* Toast notification */}
       {toast && (
-  <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-green-500 dark:bg-green-700 text-white px-6 py-2 rounded shadow-lg z-50 animate-fadeIn">
+  <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded shadow-lg z-50 animate-fadeIn text-sm sm:text-base">
           {toast}
         </div>
       )}
@@ -163,16 +163,16 @@ function Home() {
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
             onClick={() => setUploadPost(false)}
           />
-          <div className="fixed top-1/2 left-1/2 w-[90%] max-w-md card dark:bg-[#181824] dark:border-yellow-700 transform -translate-x-1/2 -translate-y-1/2 z-50 text-white dark:text-yellow-100">
+          <div className="fixed top-1/2 left-1/2 w-[98%] sm:w-[90%] max-w-md card dark:bg-[#181824] dark:border-yellow-700 transform -translate-x-1/2 -translate-y-1/2 z-50 text-white dark:text-yellow-100 p-2 sm:p-4">
             <div className="flex justify-between items-center mb-2">
-              <h2 className="font-bold text-lg text-yellow-400 dark:text-yellow-300">Create Post</h2>
+              <h2 className="font-bold text-base sm:text-lg text-yellow-400 dark:text-yellow-300">Create Post</h2>
               <RxCross1
                 className="cursor-pointer text-yellow-400"
                 onClick={() => setUploadPost(false)}
               />
             </div>
             <textarea
-              className="input mt-3 resize-none dark:bg-[#23243a] dark:text-yellow-100 dark:placeholder-yellow-300"
+              className="input mt-2 sm:mt-3 resize-none dark:bg-[#23243a] dark:text-yellow-100 dark:placeholder-yellow-300 text-sm sm:text-base"
               placeholder="What's on your mind?"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -181,17 +181,17 @@ function Home() {
               <img
                 src={frontendImage}
                 alt="Preview"
-                className="mt-3 w-full rounded-lg"
+                className="mt-2 sm:mt-3 w-full rounded-lg"
               />
             )}
-            <div className="flex justify-between items-center mt-4">
+            <div className="flex justify-between items-center mt-3 sm:mt-4">
               <BsImage
                 className="text-yellow-400 dark:text-yellow-300 cursor-pointer"
                 onClick={() => image.current.click()}
               />
               <input type="file" ref={image} hidden onChange={handleImage} />
               <button
-                className="btn-primary dark:bg-yellow-500 dark:text-[#181824]"
+                className="btn-primary dark:bg-yellow-500 dark:text-[#181824] text-sm sm:text-base"
                 onClick={handleUploadPost}
                 disabled={posting}
               >
