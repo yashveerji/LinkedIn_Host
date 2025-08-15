@@ -130,6 +130,28 @@ function Post(props) {
     }
   };
 
+
+  // Handler for reposting a post
+  const handleRepost = async () => {
+    if (!postId) return;
+    try {
+      await axios.post(`${serverUrl}/api/post/repost/${postId}`, {}, { withCredentials: true });
+      alert("Reposted successfully!");
+    } catch (error) {
+      alert("Failed to repost");
+    }
+  };
+
+  // Handler for sending post to chat
+  const handleSendToChat = async () => {
+    if (!postId) return;
+    try {
+      alert("Send to Chat: " + (description || "[No description]") + (image ? " [Image attached]" : ""));
+    } catch (error) {
+      alert("Failed to send to chat");
+    }
+  };
+
   return (
     <div className="w-full min-h-[200px] flex flex-col gap-4 bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
 
@@ -166,6 +188,14 @@ function Post(props) {
         )}
       </div>
 
+
+      {/* Post image */}
+      {image && (
+        <div className="w-full flex justify-center items-center my-2">
+          <img src={image} alt="Post" className="max-h-96 rounded-lg object-contain" />
+        </div>
+      )}
+
       {/* Post description */}
       <div className={`w-full ${!more ? "max-h-[100px] overflow-hidden" : ""} pl-[60px] text-gray-800`}>
         {description}
@@ -179,87 +209,81 @@ function Post(props) {
         </div>
       )}
 
-      {/* Image */}
-      {image && (
-        <div className='w-full h-[300px] overflow-hidden flex justify-center rounded-lg'>
-          <img src={image} alt="" className='h-full object-cover hover:scale-[1.02] transition-transform duration-300' />
-        </div>
-      )}
 
 
-      {/* Reactions & comments count */}
-      <div className='flex justify-between items-center px-4 py-2 border-t border-b border-gray-200'>
-        <div className='flex items-center gap-2 text-gray-600 text-sm'>
-          {REACTIONS.map(r =>
-            reactionSummary[r.key]?.length > 0 ? (
-              <span key={r.key} className="flex items-center gap-1 group relative">
-                {React.createElement(r.icon, { className: 'w-4 h-4', style: { color: r.color } })}
-                <span>{reactionSummary[r.key].length}</span>
-                {/* Tooltip with users */}
-                <span className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white text-gray-800 text-xs rounded px-2 py-1 shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none z-30 min-w-[80px] text-center">
-                  {reactionSummary[r.key].map(rx => rx.user?.firstName ? rx.user.firstName : "User").join(", ")}
-                </span>
-              </span>
-            ) : null
-          )}
-        </div>
-        <div
-          className='flex items-center gap-2 text-gray-600 text-sm cursor-pointer hover:text-[#0077b5]'
-          onClick={() => setShowComment(prev => !prev)}
-        >
-          <span>{comments?.length ?? 0}</span>
-          <span>Comments</span>
-        </div>
-      </div>
 
-
-      {/* Action buttons with reactions */}
-      <div className='flex justify-around items-center text-gray-700 font-medium py-2 relative'>
-        <div
-          className='flex items-center gap-2 cursor-pointer hover:text-[#0077b5] relative'
-          onMouseEnter={() => setShowReactions(true)}
-          onMouseLeave={() => setShowReactions(false)}
-        >
-          <button
-            onClick={() => handleLike(myReaction || "like")}
-            disabled={!postId}
-            title={!postId ? "Missing postId" : "Like"}
-            className='flex items-center gap-2'
+      {/* Action buttons with reactions, repost, and send to chat */}
+      <div className='flex flex-wrap justify-around items-center text-gray-700 font-medium py-2 relative gap-2'>
+        {/* Like/Reaction */}
+        <div className='relative inline-block'>
+          <div
+            onMouseEnter={() => setShowReactions(true)}
+            onMouseLeave={() => setShowReactions(false)}
           >
-            {myReaction ? (
-              <span style={{ color: REACTIONS.find(r => r.key === myReaction)?.color }}>
-                {React.createElement(REACTIONS.find(r => r.key === myReaction)?.icon, { className: 'w-5 h-5' })}
-              </span>
-            ) : (
-              <BiLike className='w-5 h-5' />
+            <button
+              onClick={() => handleLike(myReaction || "like")}
+              disabled={!postId}
+              title={!postId ? "Missing postId" : "Like"}
+              className='flex items-center gap-2 hover:text-[#0077b5]'
+            >
+              {myReaction ? (
+                <span style={{ color: REACTIONS.find(r => r.key === myReaction)?.color }}>
+                  {React.createElement(REACTIONS.find(r => r.key === myReaction)?.icon, { className: 'w-5 h-5' })}
+                </span>
+              ) : (
+                <BiLike className='w-5 h-5' />
+              )}
+              <span>{myReaction ? REACTIONS.find(r => r.key === myReaction)?.label : "Like"}</span>
+            </button>
+            {/* Reaction Picker */}
+            {showReactions && (
+              <div className="absolute bottom-8 left-0 bg-white shadow-lg rounded-full flex gap-2 px-3 py-2 z-20 border border-gray-200">
+                {REACTIONS.map(r => (
+                  <button
+                    key={r.key}
+                    title={r.label}
+                    onClick={() => handleLike(r.key)}
+                    style={{ color: r.color }}
+                    className="hover:scale-125 transition-transform"
+                  >
+                    {React.createElement(r.icon, { className: 'w-6 h-6' })}
+                  </button>
+                ))}
+              </div>
             )}
-            <span>{myReaction ? REACTIONS.find(r => r.key === myReaction)?.label : "Like"}</span>
-          </button>
-          {/* Reaction Picker */}
-          {showReactions && (
-            <div className="absolute bottom-8 left-0 bg-white shadow-lg rounded-full flex gap-2 px-3 py-2 z-20 border border-gray-200">
-              {REACTIONS.map(r => (
-                <button
-                  key={r.key}
-                  title={r.label}
-                  onClick={() => handleLike(r.key)}
-                  style={{ color: r.color }}
-                  className="hover:scale-125 transition-transform"
-                >
-                  {React.createElement(r.icon, { className: 'w-6 h-6' })}
-                </button>
-              ))}
-            </div>
-          )}
+          </div>
         </div>
-        <div
-          className='flex items-center gap-2 cursor-pointer hover:text-[#0077b5]'
+        {/* Comment */}
+        <button
+          className='flex items-center gap-2 hover:text-[#0077b5]'
           onClick={() => setShowComment(prev => !prev)}
         >
-          <FaRegCommentDots className='w-5 h-5' /><span>Comment</span>
-        </div>
+          <span className='flex items-center gap-1'>
+            <FaRegCommentDots className='w-5 h-5' />
+            <span>Comment</span>
+          </span>
+        </button>
+        {/* Repost */}
+        <button
+          className='flex items-center gap-2 hover:text-green-600'
+          onClick={handleRepost}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75v-1.5A6.75 6.75 0 0111.25 4.5h1.5M19.5 11.25v1.5A6.75 6.75 0 0112.75 19.5h-1.5M8.25 15.75L4.5 12m0 0l3.75-3.75M15.75 8.25L19.5 12m0 0l-3.75 3.75" />
+          </svg>
+          <span>Repost</span>
+        </button>
+        {/* Send to Chat */}
+        <button
+          className='flex items-center gap-2 hover:text-purple-600'
+          onClick={handleSendToChat}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 2.25l-9.193 9.193m0 0l-3.182 8.182a.563.563 0 00.728.728l8.182-3.182m-5.728-5.728l8.182-8.182a.563.563 0 01.728.728l-8.182 8.182z" />
+          </svg>
+          <span>Send to Chat</span>
+        </button>
       </div>
-
       {/* Comments section */}
       {showComment && (
         <div className='mt-2'>
