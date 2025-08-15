@@ -1,221 +1,134 @@
-// import React, { useContext, useEffect, useState } from 'react'
-// import dp from "../assets/dp.webp"
-// import moment from "moment"
-// import { FaRegCommentDots } from "react-icons/fa";
-// import { BiLike } from "react-icons/bi";
-// import axios from 'axios';
-// import { authDataContext } from '../context/AuthContext';
-// import { userDataContext } from '../context/userContext';
-// import { BiSolidLike } from "react-icons/bi";
-// import { LuSendHorizontal } from "react-icons/lu";
-// import {io} from "socket.io-client"
-// import ConnectionButton from './ConnectionButton';
 
-// let socket=io("https://linkedin-b-1.onrender.com")
-// function Post({ id, author, like, comment, description, image,createdAt }) {
-    
-//     let [more,setMore]=useState(false)
-//   let {serverUrl}=useContext(authDataContext)
-//   let {userData,setUserData,getPost,handleGetProfile}=useContext(userDataContext)
-//   let [likes,setLikes]=useState(like)
-//   let [commentContent,setCommentContent]=useState("")
-//   let [comments,setComments]=useState(comment)
-//   let [showComment,setShowComment]=useState(false)
-//     const handleLike=async ()=>{
-//       try {
-//         let result=await axios.get(serverUrl+`/api/post/like/${id}`,{withCredentials:true})
-//        setLikes(result.data.like)
-//       } catch (error) {
-//         console.log(error)
-//       }
-//     }
-//     const handleComment=async (e)=>{
-//        e.preventDefault()
-//         try {
-//           let result=await axios.post(serverUrl+`/api/post/comment/${id}`,{
-//             content:commentContent
-//           },{withCredentials:true})
-//           setComments(result.data.comment)
-//         setCommentContent("")
-//         } catch (error) {
-//           console.log(error)
-//         }
-//       }
-
-
-//       useEffect(()=>{
-//         socket.on("likeUpdated",({postId,likes})=>{
-//           if(postId==id){
-//             setLikes(likes)
-//           }
-//         })
-//         socket.on("commentAdded",({postId,comm})=>{
-//           if(postId==id){
-//             setComments(comm)
-//           }
-//         })
-
-//         return ()=>{
-// socket.off("likeUpdated")
-// socket.off("commentAdded")
-//         }
-//       },[id])
-
-//    useEffect(()=>{
-//     getPost()
-    
-//     },[likes,comments])
-
-
-//     return (
-//         <div className="w-full min-h-[200px] flex flex-col gap-[10px] bg-white rounded-lg shadow-lg  p-[20px] ">
-
-//           <div className='flex justify-between items-center'>
-
-//             <div className='flex justify-center items-start gap-[10px]' onClick={()=>handleGetProfile(author.userName)}>
-//                 <div className='w-[70px] h-[70px] rounded-full overflow-hidden flex items-center justify-center  cursor-pointer' >
-//                     <img src={author.profileImage || dp} alt="" className='h-full' />
-//                 </div>
-//                 <div>
-//                 <div className='text-[22px] font-semibold'>{`${author.firstName} ${author.lastName}` }</div>
-//                 <div className='text-[16px]'>{author.headline}</div>
-//                 <div className='text-[16px]'>{moment(createdAt).fromNow()}</div>
-//                 </div>
-//             </div>
-//             <div>
-
-//               {userData._id!=author._id &&  <ConnectionButton userId={author._id}/>}
-           
-              
-//             </div>
-//             </div>
-//          <div className={`w-full ${!more?"max-h-[100px] overflow-hidden":""} pl-[50px]`}>{description}</div>
-//          <div className="pl-[50px] text-[19px] font-semibold cursor-pointer" onClick={()=>setMore(prev=>!prev)}>{more?"read less...":"read more..."}</div>
-
-//          {image && 
-//          <div className='w-full h-[300px] overflow-hidden flex justify-center rounded-lg'>
-// <img src={image} alt="" className='h-full rounded-lg'/>
-// </div>}
-
-// <div>
-// <div className='w-full flex justify-between items-center p-[20px] border-b-2 border-gray-500'>
-// <div className='flex items-center justify-center gap-[5px] text-[18px]'>
-//     <BiLike className='text-[#1ebbff] w-[20px] h-[20px]'/><span >{likes.length}</span></div>
-// <div className='flex items-center justify-center gap-[5px] text-[18px] cursor-pointer' onClick={()=>setShowComment(prev=>!prev)}><span>{comment.length}</span><span>comments</span></div>
-// </div>
-// <div className='flex justify-start items-center w-full p-[20px] gap-[20px]'>
-// {!likes.includes(userData._id) &&  <div className='flex justify-center items-center gap-[5px] cursor-pointer' onClick={handleLike}>
-// <BiLike className=' w-[24px] h-[24px]'/>
-// <span>Like</span>
-// </div>}
-// {likes.includes(userData._id) &&  <div className='flex justify-center items-center gap-[5px] cursor-pointer' onClick={handleLike}>
-// <BiSolidLike className=' w-[24px] h-[24px] text-[#07a4ff]'/>
-// <span className="text-[#07a4ff] font-semibold">Liked</span>
-// </div>}
-
-// <div className='flex justify-center items-center gap-[5px] cursor-pointer' onClick={()=>setShowComment(prev=>!prev)}>
-// <FaRegCommentDots className=' w-[24px] h-[24px]'/>
-// <span>comment</span>
-// </div>
-// </div>
-
-// {showComment && <div>
-//     <form className="w-full flex justify-between items-center border-b-2 border-b-gray-300 p-[10px] 
-//     " onSubmit={handleComment}>
-//     <input type="text" placeholder={"leave a comment"} className='outline-none  border-none' value={commentContent} onChange={(e)=>setCommentContent(e.target.value)}/>
-//     <button><LuSendHorizontal className="text-[#07a4ff] w-[22px] h-[22px]"/></button>
-//     </form>
-
-//     <div className='flex flex-col gap-[10px]'>
-//        {comments.map((com)=>(
-//         <div key={com._id} className='flex flex-col gap-[10px] border-b-2 p-[20px] border-b-gray-300' >
-//             <div className="w-full flex justify-start items-center gap-[10px]">
-//             <div className='w-[40px] h-[40px] rounded-full overflow-hidden flex items-center justify-center  cursor-pointer' >
-//                     <img src={com.user.profileImage || dp} alt="" className='h-full' />
-//                 </div> 
-                
-//                 <div className='text-[16px] font-semibold'>{`${com.user.firstName} ${com.user.lastName}` }</div>
-              
-                
-//             </div>
-//             <div className='pl-[50px]'>{com.content}</div>
-//         </div>
-//        ))} 
-//     </div>
-// </div>}
-
-// </div>
-         
-//         </div>
-//     )
-// }
-
-// export default Post
-
-
-
-import React, { useContext, useEffect, useState } from 'react'
-import dp from "../assets/dp.webp"
-import moment from "moment"
+import React, { useContext, useEffect, useState } from 'react';
+import dp from "../assets/dp.webp";
+import moment from "moment";
 import { FaRegCommentDots } from "react-icons/fa";
 import { BiLike, BiSolidLike } from "react-icons/bi";
+import { REACTIONS } from "./Reactions";
 import { LuSendHorizontal } from "react-icons/lu";
 import axios from 'axios';
 import { authDataContext } from '../context/AuthContext';
 import { userDataContext } from '../context/UserContext';
-import { io } from "socket.io-client"
+import { io } from "socket.io-client";
 import ConnectionButton from './ConnectionButton';
 
-let socket = io("https://linkedin-b-1.onrender.com");
+// Socket origin (keep same as backend)
+let socket = io("http://localhost:8000", { withCredentials: true });
 
-function Post({ id, author, like, comment, description, image, createdAt }) {
-  let [more, setMore] = useState(false);
-  let { serverUrl } = useContext(authDataContext);
-  let { userData, getPost, handleGetProfile } = useContext(userDataContext);
-  let [likes, setLikes] = useState(like);
-  let [commentContent, setCommentContent] = useState("");
-  let [comments, setComments] = useState(comment);
-  let [showComment, setShowComment] = useState(false);
+// ...existing code...
 
-  const handleLike = async () => {
+function Post(props) {
+  // Delete post
+  const handleDeletePost = async () => {
+    if (!postId) return;
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
     try {
-      let result = await axios.get(serverUrl + `/api/post/like/${id}`, { withCredentials: true });
-      setLikes(result.data.like);
+      await axios.delete(`${serverUrl}/api/post/delete/${postId}`, { withCredentials: true });
+      // Optionally, you can add a callback or state update here to remove the post from the UI
+      window.location.reload(); // fallback: reload page to reflect deletion
     } catch (error) {
-      console.log(error);
+      alert("Failed to delete post");
+    }
+  };
+
+  // Delete comment
+  const handleDeleteComment = async (commentId) => {
+    if (!postId || !commentId) return;
+    if (!window.confirm("Delete this comment?")) return;
+    try {
+      await axios.delete(`${serverUrl}/api/post/comment/${postId}/${commentId}`, { withCredentials: true });
+      setComments(comments.filter(c => c._id !== commentId));
+    } catch (error) {
+      alert("Failed to delete comment");
+    }
+  };
+  const {
+    id, _id, author = {}, like = [], comment = [], description = "",
+    image, createdAt,
+  } = props;
+
+  const postId = id || _id;
+
+  const [more, setMore] = useState(false);
+  const { serverUrl } = useContext(authDataContext);
+  const { userData, handleGetProfile } = useContext(userDataContext);
+
+  const [reactions, setReactions] = useState(props.reactions || []);
+  const [showReactions, setShowReactions] = useState(false);
+  const [myReaction, setMyReaction] = useState(null);
+  // Reaction summary: { like: [user, ...], love: [user, ...], ... }
+  const reactionSummary = REACTIONS.reduce((acc, r) => {
+    acc[r.key] = reactions.filter(rx => rx.type === r.key);
+    return acc;
+  }, {});
+  const [commentContent, setCommentContent] = useState("");
+  const [comments, setComments] = useState(comment || []);
+  const [showComment, setShowComment] = useState(false);
+
+  useEffect(() => {
+    setReactions(props.reactions || []);
+    setComments(comment || []);
+    // Set my reaction
+    if (props.reactions && userData?._id) {
+      const mine = props.reactions.find(r => r.user && (r.user._id === userData._id || r.user === userData._id));
+      setMyReaction(mine ? mine.type : null);
+    }
+  }, [props.reactions, comment, userData]);
+
+  useEffect(() => {
+    const onLike = ({ postId: changedId, reactions }) => {
+      if (changedId === postId) setReactions(reactions || []);
+    };
+    const onComment = ({ postId: changedId, comm }) => {
+      if (changedId === postId) setComments(comm || []);
+    };
+    socket.on("likeUpdated", onLike);
+    socket.on("commentAdded", onComment);
+    return () => {
+      socket.off("likeUpdated", onLike);
+      socket.off("commentAdded", onComment);
+    };
+  }, [postId]);
+
+  const handleLike = async (reaction = "like") => {
+    if (!postId) {
+      console.warn("Missing postId — pass id={post._id}");
+      return;
+    }
+    setMyReaction(reaction);
+    setShowReactions(false);
+    try {
+      const res = await axios.post(
+        `${serverUrl}/api/post/like/${postId}`,
+        { type: reaction },
+        { withCredentials: true }
+      );
+      setReactions(res.data?.reactions || []);
+    } catch (error) {
+      console.log("Like error:", error);
     }
   };
 
   const handleComment = async (e) => {
     e.preventDefault();
+    if (!postId) {
+      console.warn("Missing postId — pass id={post._id}");
+      return;
+    }
+    const content = commentContent.trim();
+    if (!content) return;
     try {
-      let result = await axios.post(serverUrl + `/api/post/comment/${id}`, {
-        content: commentContent
-      }, { withCredentials: true });
-      setComments(result.data.comment);
+      const res = await axios.post(
+        `${serverUrl}/api/post/comment/${postId}`,
+        { content },
+        { withCredentials: true }
+      );
+      setComments(res.data?.comment || []);
       setCommentContent("");
     } catch (error) {
-      console.log(error);
+      console.log("Comment error:", error);
     }
   };
-
-  useEffect(() => {
-    socket.on("likeUpdated", ({ postId, likes }) => {
-      if (postId === id) setLikes(likes);
-    });
-    socket.on("commentAdded", ({ postId, comm }) => {
-      if (postId === id) setComments(comm);
-    });
-
-    return () => {
-      socket.off("likeUpdated");
-      socket.off("commentAdded");
-    };
-  }, [id]);
-
-  useEffect(() => {
-    getPost();
-  }, [likes, comments]);
 
   return (
     <div className="w-full min-h-[200px] flex flex-col gap-4 bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
@@ -224,28 +137,40 @@ function Post({ id, author, like, comment, description, image, createdAt }) {
       <div className='flex justify-between items-center'>
         <div
           className='flex gap-3 items-start cursor-pointer'
-          onClick={() => handleGetProfile(author.userName)}
+          onClick={() => author?.userName && handleGetProfile(author.userName)}
         >
           <div className='w-[60px] h-[60px] rounded-full overflow-hidden flex items-center justify-center border border-gray-200 shadow-sm'>
-            <img src={author.profileImage || dp} alt="" className='h-full w-full object-cover' />
+            <img src={author?.profileImage || dp} alt="" className='h-full w-full object-cover' />
           </div>
           <div>
             <div className='text-lg font-semibold hover:text-[#0077b5] transition-colors'>
-              {`${author.firstName} ${author.lastName}`}
+              {`${author?.firstName ?? ""} ${author?.lastName ?? ""}`}
             </div>
-            <div className='text-sm text-gray-600'>{author.headline}</div>
-            <div className='text-xs text-gray-500'>{moment(createdAt).fromNow()}</div>
+            <div className='text-sm text-gray-600'>{author?.headline}</div>
+            <div className='text-xs text-gray-500'>{createdAt ? moment(createdAt).fromNow() : ""}</div>
           </div>
         </div>
 
-        {userData._id !== author._id && <ConnectionButton userId={author._id} />}
+        {/* Show delete post button for post owner */}
+        {userData?._id && author?._id && userData._id === author._id && (
+          <button
+            className="text-red-500 hover:underline text-sm ml-2"
+            onClick={handleDeletePost}
+            title="Delete Post"
+          >
+            Delete
+          </button>
+        )}
+        {userData?._id && author?._id && userData._id !== author._id && (
+          <ConnectionButton userId={author._id} />
+        )}
       </div>
 
       {/* Post description */}
       <div className={`w-full ${!more ? "max-h-[100px] overflow-hidden" : ""} pl-[60px] text-gray-800`}>
         {description}
       </div>
-      {description.length > 120 && (
+      {description?.length > 120 && (
         <div
           className="pl-[60px] text-sm font-medium text-[#0077b5] cursor-pointer hover:underline"
           onClick={() => setMore(prev => !prev)}
@@ -261,38 +186,72 @@ function Post({ id, author, like, comment, description, image, createdAt }) {
         </div>
       )}
 
-      {/* Likes & comments count */}
+
+      {/* Reactions & comments count */}
       <div className='flex justify-between items-center px-4 py-2 border-t border-b border-gray-200'>
         <div className='flex items-center gap-2 text-gray-600 text-sm'>
-          <BiLike className='text-[#1ebbff] w-4 h-4' /><span>{likes.length}</span>
+          {REACTIONS.map(r =>
+            reactionSummary[r.key]?.length > 0 ? (
+              <span key={r.key} className="flex items-center gap-1 group relative">
+                {React.createElement(r.icon, { className: 'w-4 h-4', style: { color: r.color } })}
+                <span>{reactionSummary[r.key].length}</span>
+                {/* Tooltip with users */}
+                <span className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white text-gray-800 text-xs rounded px-2 py-1 shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none z-30 min-w-[80px] text-center">
+                  {reactionSummary[r.key].map(rx => rx.user?.firstName ? rx.user.firstName : "User").join(", ")}
+                </span>
+              </span>
+            ) : null
+          )}
         </div>
         <div
           className='flex items-center gap-2 text-gray-600 text-sm cursor-pointer hover:text-[#0077b5]'
           onClick={() => setShowComment(prev => !prev)}
         >
-          <span>{comments.length}</span>
+          <span>{comments?.length ?? 0}</span>
           <span>Comments</span>
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className='flex justify-around items-center text-gray-700 font-medium py-2'>
-        {!likes.includes(userData._id) ? (
-          <div
-            className='flex items-center gap-2 cursor-pointer hover:text-[#0077b5]'
-            onClick={handleLike}
-          >
-            <BiLike className='w-5 h-5' /><span>Like</span>
-          </div>
-        ) : (
-          <div
-            className='flex items-center gap-2 cursor-pointer text-[#07a4ff]'
-            onClick={handleLike}
-          >
-            <BiSolidLike className='w-5 h-5' /><span className="font-semibold">Liked</span>
-          </div>
-        )}
 
+      {/* Action buttons with reactions */}
+      <div className='flex justify-around items-center text-gray-700 font-medium py-2 relative'>
+        <div
+          className='flex items-center gap-2 cursor-pointer hover:text-[#0077b5] relative'
+          onMouseEnter={() => setShowReactions(true)}
+          onMouseLeave={() => setShowReactions(false)}
+        >
+          <button
+            onClick={() => handleLike(myReaction || "like")}
+            disabled={!postId}
+            title={!postId ? "Missing postId" : "Like"}
+            className='flex items-center gap-2'
+          >
+            {myReaction ? (
+              <span style={{ color: REACTIONS.find(r => r.key === myReaction)?.color }}>
+                {React.createElement(REACTIONS.find(r => r.key === myReaction)?.icon, { className: 'w-5 h-5' })}
+              </span>
+            ) : (
+              <BiLike className='w-5 h-5' />
+            )}
+            <span>{myReaction ? REACTIONS.find(r => r.key === myReaction)?.label : "Like"}</span>
+          </button>
+          {/* Reaction Picker */}
+          {showReactions && (
+            <div className="absolute bottom-8 left-0 bg-white shadow-lg rounded-full flex gap-2 px-3 py-2 z-20 border border-gray-200">
+              {REACTIONS.map(r => (
+                <button
+                  key={r.key}
+                  title={r.label}
+                  onClick={() => handleLike(r.key)}
+                  style={{ color: r.color }}
+                  className="hover:scale-125 transition-transform"
+                >
+                  {React.createElement(r.icon, { className: 'w-6 h-6' })}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <div
           className='flex items-center gap-2 cursor-pointer hover:text-[#0077b5]'
           onClick={() => setShowComment(prev => !prev)}
@@ -305,30 +264,43 @@ function Post({ id, author, like, comment, description, image, createdAt }) {
       {showComment && (
         <div className='mt-2'>
           <form
-            className="flex justify-between items-center border border-gray-200 rounded-full px-4 py-1"
+            className="flex justify-between items-center border border-gray-200 rounded-full px-4 py-1 bg-white"
             onSubmit={handleComment}
           >
             <input
               type="text"
               placeholder="Leave a comment..."
-              className='flex-1 outline-none border-none text-sm'
+              className='flex-1 outline-none border-none text-sm text-black placeholder-gray-500'
+              style={{ color: "#000", backgroundColor: "#fff" }}
+              autoComplete="off"
+              spellCheck={false}
               value={commentContent}
               onChange={(e) => setCommentContent(e.target.value)}
             />
-            <button type="submit">
+            <button type="submit" disabled={!postId} title={!postId ? "Missing postId" : "Send"}>
               <LuSendHorizontal className="text-[#07a4ff] w-5 h-5" />
             </button>
           </form>
 
           {/* Comment list */}
           <div className='mt-3 flex flex-col gap-3'>
-            {comments.map((com) => (
+            {comments?.map((com) => (
               <div key={com._id} className='flex flex-col gap-1 border-b border-gray-200 pb-2'>
                 <div className="flex items-center gap-2">
                   <div className='w-[35px] h-[35px] rounded-full overflow-hidden'>
-                    <img src={com.user.profileImage || dp} alt="" className='h-full w-full object-cover' />
+                    <img src={com.user?.profileImage || dp} alt="" className='h-full w-full object-cover' />
                   </div>
-                  <div className='text-sm font-semibold'>{`${com.user.firstName} ${com.user.lastName}`}</div>
+                  <div className='text-sm font-semibold'>{`${com.user?.firstName ?? ""} ${com.user?.lastName ?? ""}`}</div>
+                  {/* Delete comment button for comment owner */}
+                  {userData?._id && com.user?._id && userData._id === com.user._id && (
+                    <button
+                      className="text-xs text-red-500 hover:underline ml-2"
+                      onClick={() => handleDeleteComment(com._id)}
+                      title="Delete Comment"
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
                 <div className='pl-[45px] text-sm text-gray-700'>{com.content}</div>
               </div>
@@ -336,7 +308,6 @@ function Post({ id, author, like, comment, description, image, createdAt }) {
           </div>
         </div>
       )}
-
     </div>
   );
 }
