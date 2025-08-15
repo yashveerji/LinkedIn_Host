@@ -1,13 +1,11 @@
 import React from 'react'
-
 import Nav from '../components/Nav'
-import ChatBox from '../components/chat/ChatWindow'
-
+import ChatWindow from '../components/chat/ChatWindow'
 function ChatPage() {
   return (
     <>
-      <Nav />
-      <ChatBox />
+    <Nav/>
+    <ChatWindow/>
     </>
   )
 }

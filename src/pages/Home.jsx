@@ -12,15 +12,17 @@ import AIChat from "../components/AIChat";
 
 
 function Home() {
-  const { userData, edit, setEdit, postData, getPost, handleGetProfile } = useContext(userDataContext);
+  const { userData, edit, setEdit, postData, getPost, handleGetProfile } =
+    useContext(userDataContext);
   const { serverUrl } = useContext(authDataContext);
+
   const [frontendImage, setFrontendImage] = useState("");
   const [backendImage, setBackendImage] = useState("");
   const [description, setDescription] = useState("");
   const [uploadPost, setUploadPost] = useState(false);
   const [posting, setPosting] = useState(false);
   const [suggestedUser, setSuggestedUser] = useState([]);
-  const [toast, setToast] = useState("");
+
   const image = useRef();
 
   const handleImage = (e) => {
@@ -38,7 +40,6 @@ function Home() {
       await axios.post(serverUrl + "/api/post/create", formdata, {
         withCredentials: true,
       });
-      await getPost();
       setPosting(false);
       setUploadPost(false);
     } catch (error) {
@@ -66,16 +67,16 @@ function Home() {
     getPost();
   }, [uploadPost]);
 
-    return (
-  <div className="w-full min-h-screen bg-gradient-to-br from-[#1A1F71] to-[#2C2C2C] dark:from-[#181824] dark:to-[#23243a] flex flex-col lg:flex-row p-2 sm:p-5 gap-3 sm:gap-5 relative text-white dark:text-yellow-100">
+  return (
+    <div className="w-full min-h-screen bg-gradient-to-br from-[#1A1F71] to-[#2C2C2C] flex flex-col lg:flex-row p-5 gap-5 relative text-white">
       {edit && <EditProfile />}
 
-    {/* Left Sidebar */}
-  <div className="w-full lg:w-[25%] flex flex-col gap-3 sm:gap-5 order-2 lg:order-1 mt-4 lg:mt-0">
+      {/* Left Sidebar */}
+      <div className="w-full lg:w-[25%] flex flex-col gap-5 mt-[90px]">
         {/* Profile Card */}
-  <div className="card flex flex-col items-center relative dark:bg-[#181824] dark:border-yellow-700 w-full">
+        <div className="bg-gradient-to-r from-[#1A1F71] to-[#d19a9a] rounded-2xl p-5 shadow-lg flex flex-col items-center relative">
           <div
-            className="relative w-[80px] h-[80px] rounded-full overflow-hidden border-4 border-yellow-400 dark:border-yellow-700 cursor-pointer"
+            className="relative w-[80px] h-[80px] rounded-full overflow-hidden border-4 border-[#FFD700] cursor-pointer"
             onClick={() => setEdit(true)}
           >
             <img
@@ -85,10 +86,10 @@ function Home() {
             />
             <FiCamera className="absolute bottom-2 right-2 bg-black bg-opacity-50 p-1 rounded-full" />
           </div>
-          <h2 className="mt-3 font-bold text-lg text-yellow-400 dark:text-yellow-300">{`${userData.firstName} ${userData.lastName}`}</h2>
-          <p className="text-sm text-yellow-200 dark:text-yellow-400 text-center">{userData.headline}</p>
+          <h2 className="mt-3 font-bold text-lg">{`${userData.firstName} ${userData.lastName}`}</h2>
+          <p className="text-sm text-gray-300 text-center">{userData.headline}</p>
           <button
-            className="mt-3 btn-primary dark:bg-yellow-500 dark:text-[#181824]"
+            className="mt-3 px-4 py-2 bg-[#FFD700] text-[#1A1F71] font-semibold rounded-full shadow hover:opacity-90"
             onClick={() => setEdit(true)}
           >
             Edit Profile
@@ -96,17 +97,17 @@ function Home() {
         </div>
 
         {/* Suggested Users */}
-  <div className="card dark:bg-[#181824] dark:border-yellow-700 w-full">
-          <h3 className="font-semibold text-lg text-yellow-400 dark:text-yellow-300 mb-3">Suggested Users</h3>
+        <div className="bg-[#2C2C2C] rounded-2xl p-4 shadow-lg">
+          <h3 className="font-semibold text-lg mb-3">Suggested Users</h3>
           <div className="flex flex-col gap-3 max-h-[400px] overflow-y-auto">
             {suggestedUser.length > 0 ? (
               suggestedUser.map((su, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary cursor-pointer transition"
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#1A1F71] cursor-pointer transition"
                   onClick={() => handleGetProfile(su.userName)}
                 >
-                  <div className="w-[45px] h-[45px] rounded-full overflow-hidden border-2 border-yellow-400 dark:border-yellow-700">
+                  <div className="w-[45px] h-[45px] rounded-full overflow-hidden border-2 border-[#FFD700]">
                     <img
                       src={su.profileImage || dp}
                       alt="User"
@@ -114,23 +115,23 @@ function Home() {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-semibold text-yellow-200 dark:text-yellow-400">{`${su.firstName} ${su.lastName}`}</span>
-                    <span className="text-xs text-yellow-300 dark:text-yellow-200">{su.headline}</span>
+                    <span className="font-semibold">{`${su.firstName} ${su.lastName}`}</span>
+                    <span className="text-xs text-gray-300">{su.headline}</span>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-yellow-300 dark:text-yellow-200">No suggestions</p>
+              <p className="text-gray-400">No suggestions</p>
             )}
           </div>
         </div>
       </div>
 
-  {/* Center Feed */}
-  <div className="w-full lg:w-[50%] flex flex-col gap-3 sm:gap-5 mt-6 sm:mt-[90px] order-1 lg:order-2">
+      {/* Center Feed */}
+      <div className="w-full lg:w-[50%] flex flex-col gap-5 mt-[90px]">
         {/* + Post Button */}
         <button
-          className="btn-primary w-full flex items-center justify-center gap-2 text-base sm:text-lg dark:bg-yellow-500 dark:text-[#181824]"
+          className="w-full py-3 bg-gradient-to-r from-[#FFD700] to-[#FFCC00] text-[#1A1F71] font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 hover:scale-105 transition-transform"
           onClick={() => setUploadPost(true)}
         >
           <FiPlus size={20} /> Add Post
@@ -138,22 +139,10 @@ function Home() {
 
         {/* Posts */}
         {postData.map((post, index) => (
-          <div key={index} className="card dark:bg-[#181824] dark:border-yellow-700 w-full">
-            <Post {...post} onDelete={() => {
-              setToast("Post deleted successfully");
-              setTimeout(() => {
-                setToast("");
-                getPost();
-              }, 1500);
-            }} />
+          <div key={index} className="bg-[#1A1F71] rounded-2xl p-4 shadow-lg">
+            <Post {...post} />
           </div>
         ))}
-      {/* Toast notification */}
-      {toast && (
-  <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded shadow-lg z-50 animate-fadeIn text-sm sm:text-base">
-          {toast}
-        </div>
-      )}
       </div>
 <AIChat/>
       {/* Post Modal */}
@@ -163,16 +152,16 @@ function Home() {
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
             onClick={() => setUploadPost(false)}
           />
-          <div className="fixed top-1/2 left-1/2 w-[98%] sm:w-[90%] max-w-md card dark:bg-[#181824] dark:border-yellow-700 transform -translate-x-1/2 -translate-y-1/2 z-50 text-white dark:text-yellow-100 p-2 sm:p-4">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="font-bold text-base sm:text-lg text-yellow-400 dark:text-yellow-300">Create Post</h2>
+          <div className="fixed top-1/2 left-1/2 w-[90%] max-w-md bg-[#2C2C2C] rounded-2xl shadow-lg p-5 transform -translate-x-1/2 -translate-y-1/2 z-50 text-white">
+            <div className="flex justify-between items-center">
+              <h2 className="font-bold text-lg">Create Post</h2>
               <RxCross1
-                className="cursor-pointer text-yellow-400"
+                className="cursor-pointer"
                 onClick={() => setUploadPost(false)}
               />
             </div>
             <textarea
-              className="input mt-2 sm:mt-3 resize-none dark:bg-[#23243a] dark:text-yellow-100 dark:placeholder-yellow-300 text-sm sm:text-base"
+              className="w-full mt-3 p-2 bg-[#1A1F71] rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#FFD700]"
               placeholder="What's on your mind?"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -181,24 +170,26 @@ function Home() {
               <img
                 src={frontendImage}
                 alt="Preview"
-                className="mt-2 sm:mt-3 w-full rounded-lg"
+                className="mt-3 w-full rounded-lg"
               />
             )}
-            <div className="flex justify-between items-center mt-3 sm:mt-4">
+            <div className="flex justify-between items-center mt-4">
               <BsImage
-                className="text-yellow-400 dark:text-yellow-300 cursor-pointer"
+                className="text-[#FFD700] cursor-pointer"
                 onClick={() => image.current.click()}
               />
               <input type="file" ref={image} hidden onChange={handleImage} />
               <button
-                className="btn-primary dark:bg-yellow-500 dark:text-[#181824] text-sm sm:text-base"
+                className="px-4 py-2 bg-gradient-to-r from-[#FFD700] to-[#FFCC00] text-[#1A1F71] rounded-full font-bold"
                 onClick={handleUploadPost}
                 disabled={posting}
               >
                 {posting ? "Posting..." : "Post"}
               </button>
             </div>
+          
           </div>
+         
         </>
       )}
     </div>

@@ -7,12 +7,8 @@ import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { RxCrossCircled } from "react-icons/rx";
 import io from "socket.io-client";
 
-import { useNavigate } from "react-router-dom";
-
 function Network() {
   const { serverUrl } = useContext(authDataContext);
-
-  const navigate = useNavigate();
 
   const [requests, setRequests] = useState([]);
   const [connections, setConnections] = useState([]);
@@ -90,7 +86,7 @@ function Network() {
   }, []);
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-[#1A1F71] to-[#2C2C2C] flex flex-col items-center">
+    <div className="w-screen min-h-screen bg-gradient-to-br from-[#1A1F71] to-[#2C2C2C] flex flex-col items-center">
       <div className="fixed top-0 w-full z-50">
         <Nav />
       </div>
@@ -151,12 +147,7 @@ function Network() {
         {connections.length > 0 ? (
           <div className="bg-white shadow-lg rounded-lg divide-y">
             {connections.map((conn) => (
-              <div
-                key={conn._id}
-                className="flex items-center p-4 gap-4 cursor-pointer hover:bg-gray-100 transition"
-                onClick={() => navigate(`/profile/${conn.userName}`)}
-                title="View Profile"
-              >
+              <div key={conn._id} className="flex items-center p-4 gap-4">
                 <div className="w-14 h-14 rounded-full overflow-hidden border border-gray-300">
                   <img
                     src={conn.profileImage || dp}

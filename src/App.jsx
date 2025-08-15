@@ -20,8 +20,7 @@ function App() {
     <Route path='/signup' element={userData?<Navigate to="/"/>:<Signup/>}/>
     <Route path='/login' element={userData?<Navigate to="/"/>:<Login/>}/>
     <Route path='/network' element={userData?<Network/>:<Navigate to="/login"/>}/>
-  <Route path='/profile' element={userData?<Profile/>:<Navigate to="/login"/>}/>
-  <Route path='/profile/:userName' element={userData?<Profile/>:<Navigate to="/login"/>}/>
+    <Route path='/profile' element={userData?<Profile/>:<Navigate to="/login"/>}/>
     <Route path='/notification' element={userData?<Notification/>:<Navigate to="/login"/>}/>
     <Route path='/chat' element={<ChatPage/>}/>
      <Route path="/jobs" element={<JobBoard />} />

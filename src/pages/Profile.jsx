@@ -1,6 +1,5 @@
 
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import Nav from '../components/Nav';
 import dp from "../assets/dp.webp";
 import { HiPencil } from "react-icons/hi2";
@@ -10,47 +9,15 @@ import EditProfile from '../components/EditProfile';
 import Post from '../components/Post';
 import ConnectionButton from '../components/ConnectionButton';
 
-
 function Profile() {
-  const { userData, edit, setEdit, postData, profileData, setProfileData } = useContext(userDataContext);
+  const { userData, edit, setEdit, postData, profileData } = useContext(userDataContext);
   const { serverUrl } = useContext(authDataContext);
-  const { userName } = useParams();
 
   const [profilePost, setProfilePost] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  // Fetch profile data if userName param exists (viewing someone else's profile)
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (userName) {
-        setLoading(true);
-        try {
-          const res = await fetch(`${serverUrl}/api/user/profile/${userName}`, { credentials: 'include' });
-          const data = await res.json();
-          setProfileData(data);
-        } catch (err) {
-          setProfileData({});
-        }
-        setLoading(false);
-      }
-    };
-    fetchProfile();
-    // eslint-disable-next-line
-  }, [userName, serverUrl]);
 
   useEffect(() => {
-    if (profileData && profileData._id) {
-      setProfilePost(postData.filter((post) => post.author._id === profileData._id));
-    }
+    setProfilePost(postData.filter((post) => post.author._id === profileData._id));
   }, [profileData, postData]);
-
-  if (loading || !profileData || !profileData._id) {
-    return (
-      <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1A1F71] to-[#2C2C2C]">
-        <div className="text-white text-xl">Loading profile...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-[#1A1F71] to-[#2C2C2C] flex flex-col items-center">
@@ -58,6 +25,7 @@ function Profile() {
       {edit && <EditProfile />}
 
       <div className="w-full max-w-[1200px] flex flex-col lg:flex-row gap-6 pt-[100px] px-4 pb-10">
+        
         {/* Left Column - Posts */}
         <div className="w-full lg:w-2/3 flex flex-col gap-6">
           {/* Profile Card */}
@@ -82,7 +50,7 @@ function Profile() {
               <div className="text-lg text-gray-600">{profileData.headline || ""}</div>
               <div className="text-gray-500">{profileData.location}</div>
               <div className="text-gray-500">{`${profileData.connection.length} connections`}</div>
-              {/* No ID shown here */}
+
               {/* Action Button */}
               {profileData._id === userData._id ? (
                 <button

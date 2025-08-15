@@ -503,7 +503,7 @@ function EditProfile() {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Background overlay */}
       <div
-        className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black bg-opacity-50"
         onClick={() => setEdit(false)}
       ></div>
 
@@ -524,36 +524,33 @@ function EditProfile() {
       />
 
       {/* Modal */}
-      <div className="relative z-50 w-full max-w-xl h-[90vh] bg-gradient-to-br from-[#1A1F71] to-[#23243a] shadow-2xl rounded-2xl overflow-y-auto p-8 text-white border border-yellow-400">
+      <div className="relative z-50 w-[90%] max-w-[600px] h-[90vh] bg-[#1A1F71] shadow-2xl rounded-2xl overflow-y-auto p-5 text-white">
         {/* Close button */}
         <button
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-yellow-400/20 transition"
+          className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-700 transition"
           onClick={() => setEdit(false)}
-          aria-label="Close"
         >
-          <RxCross1 className="w-6 h-6 text-yellow-400" />
+          <RxCross1 className="w-6 h-6 text-white" />
         </button>
 
         {/* Cover image */}
         <div
-          className="relative w-full h-40 rounded-lg overflow-hidden cursor-pointer group border-2 border-yellow-400"
+          className="relative w-full h-40 rounded-lg overflow-hidden cursor-pointer group"
           onClick={() => coverImage.current.click()}
         >
-          {frontendCoverImage ? (
+          {frontendCoverImage && (
             <img
               src={frontendCoverImage}
               alt="cover"
               className="w-full h-full object-cover"
             />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-yellow-200 text-lg">Add Cover Photo</div>
           )}
           <FiCamera className="absolute right-4 top-1/2 transform -translate-y-1/2 text-yellow-400 text-2xl opacity-80 group-hover:opacity-100" />
         </div>
 
         {/* Profile image */}
         <div
-          className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-yellow-400 shadow-lg -mt-12 ml-6 cursor-pointer bg-[#23243a]"
+          className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-yellow-400 shadow-lg -mt-10 ml-5 cursor-pointer"
           onClick={() => profileImage.current.click()}
         >
           <img
@@ -561,40 +558,36 @@ function EditProfile() {
             alt="profile"
             className="w-full h-full object-cover"
           />
-          <div className="absolute bottom-0 right-0 bg-yellow-400 p-1 rounded-full border-2 border-[#23243a]">
-            <FiPlus className="text-[#1A1F71]" />
+          <div className="absolute bottom-0 right-0 bg-yellow-400 p-1 rounded-full">
+            <FiPlus className="text-white" />
           </div>
         </div>
 
         {/* Form */}
-        <form className="mt-8 space-y-6" onSubmit={e => { e.preventDefault(); handleSaveProfile(); }}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              { placeholder: "First Name", value: firstName, setter: setFirstName },
-              { placeholder: "Last Name", value: lastName, setter: setLastName },
-              { placeholder: "Username", value: userName, setter: setUserName },
-              { placeholder: "Headline", value: headline, setter: setHeadline },
-              { placeholder: "Location", value: location, setter: setLocation },
-              { placeholder: "Gender", value: gender, setter: setGender },
-            ].map((field, idx) => (
-              <input
-                key={idx}
-                type="text"
-                placeholder={field.placeholder}
-                value={field.value}
-                onChange={(e) => field.setter(e.target.value)}
-                className="w-full p-3 rounded-lg bg-[#23243a] text-white placeholder-yellow-200 border border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              />
-            ))}
-          </div>
+        <div className="mt-6 space-y-4">
+          {[
+            { placeholder: "First Name", value: firstName, setter: setFirstName },
+            { placeholder: "Last Name", value: lastName, setter: setLastName },
+            { placeholder: "Username", value: userName, setter: setUserName },
+            { placeholder: "Headline", value: headline, setter: setHeadline },
+            { placeholder: "Location", value: location, setter: setLocation },
+            { placeholder: "Gender", value: gender, setter: setGender },
+          ].map((field, idx) => (
+            <input
+              key={idx}
+              type="text"
+              placeholder={field.placeholder}
+              value={field.value}
+              onChange={(e) => field.setter(e.target.value)}
+              className="w-full p-3 rounded-lg bg-[#2C2C2C] text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            />
+          ))}
 
           {/* Skills Section */}
           <SectionCard title="Skills" color="yellow">
-            <div className="flex flex-wrap gap-2">
-              {skills.map((skill, index) => (
-                <SkillTag key={index} skill={skill} onRemove={removeSkill} color="yellow" />
-              ))}
-            </div>
+            {skills.map((skill, index) => (
+              <SkillTag key={index} skill={skill} onRemove={removeSkill} color="yellow" />
+            ))}
             <AddField
               placeholder="Add new skill"
               value={newSkills}
@@ -606,11 +599,9 @@ function EditProfile() {
 
           {/* Education Section */}
           <SectionCard title="Education" color="yellow">
-            <div className="space-y-2">
-              {education.map((edu, index) => (
-                <ListItem key={index} data={edu} onRemove={() => removeEducation(edu)} color="yellow" />
-              ))}
-            </div>
+            {education.map((edu, index) => (
+              <ListItem key={index} data={edu} onRemove={() => removeEducation(edu)} color="yellow" />
+            ))}
             <MultiAddField
               fields={[
                 { placeholder: "College", value: newEducation.college, setter: (v) => setNewEducation({ ...newEducation, college: v }) },
@@ -624,11 +615,9 @@ function EditProfile() {
 
           {/* Experience Section */}
           <SectionCard title="Experience" color="yellow">
-            <div className="space-y-2">
-              {experience.map((exp, index) => (
-                <ListItem key={index} data={exp} onRemove={() => removeExperience(exp)} color="yellow" />
-              ))}
-            </div>
+            {experience.map((exp, index) => (
+              <ListItem key={index} data={exp} onRemove={() => removeExperience(exp)} color="yellow" />
+            ))}
             <MultiAddField
               fields={[
                 { placeholder: "Title", value: newExperience.title, setter: (v) => setNewExperience({ ...newExperience, title: v }) },
@@ -642,13 +631,13 @@ function EditProfile() {
 
           {/* Save Button */}
           <button
-            type="submit"
+            onClick={handleSaveProfile}
             disabled={saving}
-            className="w-full p-3 bg-yellow-400 text-[#1A1F71] font-bold rounded-full hover:scale-105 transition disabled:opacity-60 disabled:cursor-not-allowed shadow-lg mt-2"
+            className="w-full p-3 bg-yellow-400 text-[#1A1F71] font-bold rounded-full hover:scale-105 transition"
           >
             {saving ? "Saving..." : "Save Profile"}
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );
@@ -677,13 +666,11 @@ function ListItem({ data, onRemove, color }) {
   return (
     <div className="flex justify-between items-start p-2 bg-[#1F2561] rounded-lg">
       <div className="text-sm space-y-1">
-        {Object.entries(data)
-          .filter(([key]) => key !== 'id' && key !== '_id')
-          .map(([key, value]) => (
-            <div key={key} className="capitalize text-white">
-              {key}: {value}
-            </div>
-          ))}
+        {Object.entries(data).map(([key, value]) => (
+          <div key={key} className="capitalize text-white">
+            {key}: {value}
+          </div>
+        ))}
       </div>
       <RxCross1 onClick={onRemove} className={`w-4 h-4 cursor-pointer text-${color}-400`} />
     </div>
